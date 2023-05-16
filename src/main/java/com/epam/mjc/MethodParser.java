@@ -23,7 +23,29 @@ public class MethodParser {
      * @return {@link MethodSignature} object filled with parsed values from source string
      */
     public MethodSignature parseFunction(String signatureString) {
+        int index = signatureString.indexOf('(');
+        String beforeArguments = signatureString.substring(0, index);
+        String[] splittedBeforeArguments = beforeArguments.split(" ");
+        if (signatureString.length()-1==index){
+            if (splittedBeforeArguments.length == 3){
+                return getWithArgument(signatureString);
+            }
+            MethodSignature methodSignature = new MethodSignature(getMethodName(signatureString), getArgumentList(signatureString));
+            methodSignature.setMethodName(getMethodName(signatureString));
+            methodSignature.setReturnType(getReturnType(signatureString));
+            return methodSignature;
+        }else {
+            if (splittedBeforeArguments.length == 3){
+                return getWithoutArgument(signatureString);
+            }
+            MethodSignature methodSignature = new MethodSignature(getMethodName(signatureString));
+            methodSignature.setMethodName(getMethodName(signatureString));
+            methodSignature.setReturnType(getReturnType(signatureString));
+            return methodSignature;
+        }
+    }
 
+    public MethodSignature getWithArgument(String signatureString){
         MethodSignature methodSignature = new MethodSignature(getMethodName(signatureString), getArgumentList(signatureString));
         methodSignature.setMethodName(getMethodName(signatureString));
         methodSignature.setReturnType(getReturnType(signatureString));
@@ -31,21 +53,33 @@ public class MethodParser {
         return methodSignature;
     }
 
+    public MethodSignature getWithoutArgument(String signatureString){
+        MethodSignature methodSignature = new MethodSignature(getMethodName(signatureString));
+        methodSignature.setMethodName(getMethodName(signatureString));
+        methodSignature.setReturnType(getReturnType(signatureString));
+        methodSignature.setAccessModifier(getAccessModifier(signatureString));
+        return methodSignature;
+    }
+
     public String getAccessModifier(String signatureString) {
-        String[] splittedSignatureString = signatureString.split(" ");
-        return splittedSignatureString[0];
+        int index = signatureString.indexOf('(');
+        String beforeArguments = signatureString.substring(0, index);
+        String[] splittedBeforeArguments = beforeArguments.split(" ");
+        return splittedBeforeArguments[0];
     }
 
     public String getReturnType(String signatureString) {
-        String[] splittedSignatureString = signatureString.split(" ");
-        return splittedSignatureString[1];
+        int index = signatureString.indexOf('(');
+        String beforeArguments = signatureString.substring(0, index);
+        String[] splittedBeforeArguments = beforeArguments.split(" ");
+        return splittedBeforeArguments[splittedBeforeArguments.length-2];
     }
 
     public String getMethodName(String signatureString) {
         int index = signatureString.indexOf('(');
         String untilMethodName = signatureString.substring(0, index);
         String[] splittedSignatureString = untilMethodName.split(" ");
-        return splittedSignatureString[2];
+        return splittedSignatureString[splittedSignatureString.length-1];
     }
 
     public List<MethodSignature.Argument> getArgumentList(String signatureString) {
