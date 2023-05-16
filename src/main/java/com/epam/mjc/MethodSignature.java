@@ -55,6 +55,10 @@ public class MethodSignature {
             this.name = name;
         }
 
+        public Argument() {
+
+        }
+
         public String getType() {
             return type;
         }
